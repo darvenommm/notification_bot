@@ -1,14 +1,14 @@
 from aiogram import Bot, Dispatcher
-from typing import Self
+from typing import Any, Self, Type
 
 
 class BotStorage:
-    __instance: Self
-    __dispatcher: Dispatcher
-    __bot: Bot
+    __instance: Self | None = None
+    __dispatcher: Dispatcher | None = None
+    __bot: Bot | None = None
 
-    def __new__(cls, *args, **kwargs) -> Self:
-        if not isinstance(cls.__instance, cls):
+    def __new__(cls: Type[Self], *args: Any, **kwargs: Any) -> Self:
+        if cls.__instance is None:
             cls.__instance = super().__new__(cls, *args, **kwargs)
 
         return cls.__instance

@@ -4,17 +4,42 @@ version = "0.1.0"
 description = ""
 authors = ["Denis Romodanov <darvenommm@gmail.com>"]
 readme = "README.md"
+packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = "^0.115.0"
-uvicorn = {extras = ["standard"], version = "^0.31.0"}
+uvicorn = { extras = ["standard"], version = "^0.31.0" }
 aiogram = "^3.13.1"
 uvloop = "^0.20.0"
+orjson = "^3.10.7"
+pydantic = "^2.9.2"
+pydantic-settings = "^2.5.2"
+sqlalchemy = "^2.0.35"
+alembic = "^1.13.3"
+pyjwt = "^2.9.0"
+starlette-context = "^0.3.6"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.8.0"
 
+[tool.poetry.scripts]
+start = "src.main:start_bot"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+
+[tool.mypy]
+plugins = ["sqlalchemy.ext.mypy.plugin", "pydantic.mypy"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+no_implicit_reexport = false
+exclude = ["^conf/", "^tests/", "^utils/"]

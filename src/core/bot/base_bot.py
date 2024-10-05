@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from aiogram import Bot, Dispatcher
 
-from src.core.storages import BotStorage
-from src.handlers.commands import commands_router
+from settings.bot import bot_settings
+from core.storages.bot import BotStorage
+from routes.bot.commands import commands_router
 
 
 class BaseBot(ABC):
@@ -11,8 +12,8 @@ class BaseBot(ABC):
         self._set_base_settings()
 
     def _set_base_settings(self) -> None:
-        bot = Bot(token="")
         dispatcher = Dispatcher()
+        bot = Bot(token=bot_settings.bot_token)
 
         dispatcher.include_router(commands_router)
 

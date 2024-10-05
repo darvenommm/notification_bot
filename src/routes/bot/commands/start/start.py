@@ -1,9 +1,9 @@
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from .router import router
+from routes.bot.commands import commands_router
 
 
-@router.message(CommandStart())
+@commands_router.message(CommandStart())
 async def start_handler(message: Message) -> None:
     await message.answer("Hello")
