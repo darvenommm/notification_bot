@@ -6,7 +6,8 @@ from fastapi.responses import ORJSONResponse
 from typing import Callable, AsyncContextManager, AsyncGenerator
 
 from .settings.main import main_settings
-from .modules.users import users_controller, users_updater
+from .core.queue import queue_connector
+from .modules.users import users_controller, users_publisher, users_consumer
 
 
 class App:
@@ -36,7 +37,18 @@ class App:
     def __get_lifespan(self) -> Callable[[FastAPI], AsyncContextManager[None]]:
         @asynccontextmanager
         async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
-            asyncio.create_task(users_updater.run())
+            await queue_connector.init_pool()
+
+            publishing = asyncio.create_task(users_publisher.start())
+            consuming = asyncio.create_task(users_consumer.start())
+
             yield
+
+            try:
+                publishing.cancel()
+                consuming.cancel()
+                await asyncio.gather(publishing, consuming)
+            except asyncio.CancelledError:
+                print("Success canceled publishing and consuming")
 
         return lifespan
